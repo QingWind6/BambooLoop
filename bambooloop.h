@@ -17,7 +17,7 @@ class Scheduler; // 前向声明
 /**
  * @brief App 基类
  */
-class App {
+class AppBase {
     friend class Scheduler;
 private:
     AppState _state = AppState::SETUP;
@@ -40,7 +40,7 @@ private:
     }
 
 public:
-    virtual ~App() = default;
+    virtual ~AppBase() = default;
 
     virtual void onSetup() {}
     virtual void onRunning() {}
@@ -58,14 +58,14 @@ public:
 class Scheduler {
 private:
     // 独占管理 App 内存
-    std::vector<std::unique_ptr<App>> _apps;
-    std::vector<std::unique_ptr<App>> _new_apps; 
+    std::vector<std::unique_ptr<AppBase>> _apps;
+    std::vector<std::unique_ptr<AppBase>> _new_apps; 
 
 public:
     /**
      * @brief 安装 App (移交所有权)
      */
-    void install(std::unique_ptr<App> app) {
+    void install(std::unique_ptr<AppBase> app) {
         if (app) _new_apps.push_back(std::move(app));
     }
 
